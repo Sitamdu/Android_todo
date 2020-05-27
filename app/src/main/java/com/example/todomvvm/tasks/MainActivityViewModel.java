@@ -5,6 +5,7 @@ import android.view.View;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.todomvvm.database.AppDatabase;
@@ -19,7 +20,10 @@ public class MainActivityViewModel extends AndroidViewModel {
 
    private  LiveData<List<TaskEntry>> tasks;
 
-
+private MutableLiveData<Boolean> _showSnackBarEvent = new MutableLiveData<>();
+public LiveData<Boolean> showSnackBarEvent(){
+    return _showSnackBarEvent;
+}
 
     public  MainActivityViewModel(Application application){
         super(application);
@@ -34,6 +38,7 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     public void deleteTask(TaskEntry task){
         repository.deleteTask(task);
+        _showSnackBarEvent.setValue(true);
     }
 
 }

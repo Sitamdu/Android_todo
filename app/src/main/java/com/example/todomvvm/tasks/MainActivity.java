@@ -18,6 +18,7 @@ import com.example.todomvvm.database.AppDatabase;
 import com.example.todomvvm.database.Repository;
 import com.example.todomvvm.database.TaskEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
          Attach an OnClickListener to it, so that when it's clicked, a new intent will be created
          to launch the AddTaskActivity.
          */
-        FloatingActionButton fabButton = findViewById(R.id.fab);
+        final FloatingActionButton fabButton = findViewById(R.id.fab);
 
         fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +97,14 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
             @Override
             public void onChanged(List<TaskEntry> taskEntries) {
                 mAdapter.setTasks(taskEntries);
+            }
+        });
+        viewModel.showSnackBarEvent().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean showSnackBar) {
+                if(showSnackBar == true){
+                    Snackbar.make(fabButton, "Deleted", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }
