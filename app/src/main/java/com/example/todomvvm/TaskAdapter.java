@@ -20,7 +20,7 @@ import java.util.Locale;
  * This TaskAdapter creates and binds ViewHolders, that hold the description and priority of a task,
  * to a RecyclerView to efficiently display data.
  */
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+public class  TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     // Constant for date format
     private static final String DATE_FORMAT = "dd/MM/yyy";
