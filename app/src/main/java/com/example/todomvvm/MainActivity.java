@@ -10,7 +10,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.todomvvm.database.AppDatabase;
+import com.example.todomvvm.database.TaskEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemClickListener {
@@ -20,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
     // Member variables for the adapter and RecyclerView
     private RecyclerView mRecyclerView;
     private TaskAdapter mAdapter;
+
+    AppDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +59,18 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
 
             // Called when a user swipes left or right on a ViewHolder
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
                 // Here is where you'll implement swipe to delete
+                AppDatabase.databaseWriteExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = viewHolder.getAdapterPosition();
+                        TaskEntry task = mAdapter.getTasks().get(position);
+                        database.taskDao().deleteTask(task);
+                        retrieveTasks();
+                    }
+                });
             }
         }).attachToRecyclerView(mRecyclerView);
 
@@ -73,10 +89,32 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
                 startActivity(addTaskIntent);
             }
         });
+        database = AppDatabase.getInstance(getApplicationContext());
     }
 
     @Override
     public void onItemClickListener(int itemId) {
         // Launch AddTaskActivity adding the itemId as an extra in the intent
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        retrieveTasks();
+    }
+
+    private void retrieveTasks() {
+        AppDatabase.databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+               final List<TaskEntry> tasks = database.taskDao().loadAllTasks();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.setTasks(tasks);
+                    }
+                });
+            }
+        });
     }
 }

@@ -43,6 +43,9 @@ public class  TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolde
         mContext = context;
         mItemClickListener = listener;
     }
+public List<TaskEntry> getTasks(){
+        return mTaskEntries;
+}
 
     /**
      * Called when ViewHolders are created to fill a RecyclerView.
