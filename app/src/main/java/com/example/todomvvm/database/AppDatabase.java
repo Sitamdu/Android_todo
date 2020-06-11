@@ -20,6 +20,8 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();
     private static final Object LOCK = new Object();
     private static String DATABASE_NAME = "todolist";
+    public static final ExecutorService databaseWriteExecutor =
+            Executors.newFixedThreadPool(1);
      private static AppDatabase sInstance;
 
     public static AppDatabase getInstance(Context context){
